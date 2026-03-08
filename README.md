@@ -10,7 +10,51 @@ license: apache-2.0
 short_description: Multi-family GPU autotuning surrogate environment and benchmark API.
 ---
 
-# Multi-family GPU autotuning benchmark
+# KernelOptimization_RL_ENV
+
+A reinforcement learning environment for GPU kernel autotuning. Optimizes Triton kernel configurations (block_size, num_warps, num_stages) for softmax, layernorm, and grouped_gemm operations using surrogate models.
+
+## Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/SaipranavSripathi/KernelOptimization_RL_ENV.git
+cd KernelOptimization_RL_ENV
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Check CUDA availability
+python3 scripts/check_torch_cuda.py
+
+# Run the full pipeline
+./scripts/run_full_pipeline.sh
+```
+
+## Prerequisites
+
+- Python 3.10+
+- CUDA-capable GPU (for full benchmarking)
+- Triton (for kernel autotuning)
+- PyTorch with CUDA support
+
+## Project Structure
+
+- `server/` - OpenEnv server and RL environment
+- `kernels/` - Base kernel implementations (softmax, layernorm, grouped_gemm)
+- `scripts/` - Benchmark and training scripts
+- `data/` - Measurement caches and benchmark splits
+- `frontend/` - React frontend for visualization
+- `backend/` - Terminal backend for interactive sessions
+- `models.py` - Surrogate model definitions
+- `client.py` - Client for interacting with the environment
+- `space_app.py` - HuggingFace Space deployment
+
+## Usage
 
 ## TL;DR
 
