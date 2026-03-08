@@ -1,0 +1,15 @@
+name: softmax_surrogate_env
+version: 0.1.0
+description: >
+  OpenEnv scaffold for discrete-action multi-family GPU autotuning with real
+  H100 measurements and held-out-shape / held-out-family evaluation.
+python:
+  package: .
+server:
+  entrypoint: server.app:app
+environment:
+  class: server.softmax_surrogate_environment.SoftmaxSurrogateEnvironment
+  init_kwargs:
+    measurement_path: data/autotune_measurements.csv
+    budget: 6
+    seed: 0

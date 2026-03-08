@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RL Surrogate Kernel Autotuning</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        header {
+            text-align: center;
+            padding: 4rem 0;
+            position: relative;
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .card-icon.blue { background: rgba(37, 99, 235, 0.2); }
+        .card-icon.green { background: rgba(16, 185, 129, 0.2); }
+        .card-icon.amber { background: rgba(245, 158, 11, 0.2); }
+        .card-icon.purple { background: rgba(139, 92, 246, 0.2); }
+        .card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+        .features {
+            margin: 3rem 0;
+        }
+        .features h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+        }
+        .feature-item span {
+            color: var(--secondary);
+            font-size: 1.25rem;
+        }
+        .code-block {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+        .code-block pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: #e2e8f0;
+            white-space: pre;
+        }
+        .code-block .comment { color: #6b7280; }
+        .code-block .keyword { color: #c084fc; }
+        .code-block .string { color: #34d399; }
+        .code-block .number { color: #f472b6; }
+        .cta {
+            text-align: center;
+            padding: 3rem;
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+        .cta h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .cta p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
+        }
+        .kernel-families {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        .kernel-tag {
+            padding: 0.5rem 1rem;
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>RL Surrogate Kernel Autotuning</h1>
+            <p class="subtitle">
+                A reinforcement learning environment for optimizing GPU kernels using surrogate models and self-improving AI agents
+            </p>
+            <span class="badge">🚀 HuggingFace Space</span>
+        </header>
+        <div class="grid">
+            <div class="card">
+                <div class="card-icon blue">🎯</div>
+                <h3>Multi-Family Support</h3>
+                <p>Optimizes three kernel families: Softmax, LayerNorm, and Grouped GEMM for NVIDIA GPUs</p>
+            </div>
+            <div class="card">
+                <div class="card-icon green">📊</div>
+                <h3>Surrogate Modeling</h3>
+                <p>Uses Gaussian Process surrogates to predict kernel performance and guide exploration</p>
+            </div>
+            <div class="card">
+                <div class="card-icon amber">🤖</div>
+                <h3>Self-Improving AI</h3>
+                <p>Employs student-teacher LLM architecture for autonomous kernel optimization</p>
+            </div>
+            <div class="card">
+                <div class="card-icon purple">⚡</div>
+                <h3>Triton Backend</h3>
+                <p>Generates optimized Triton kernels with configurable block sizes, warps, and stages</p>
+            </div>
+        </div>
+        <div class="features">
+            <h2>Supported Kernel Families</h2>
+            <div class="kernel-families">
+                <span class="kernel-tag">softmax</span>
+                <span class="kernel-tag">layernorm</span>
+                <span class="kernel-tag">grouped_gemm</span>
+            </div>
+        </div>
+        <div class="features">
+            <h2>How It Works</h2>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span>1.</span>
+                    <div><strong>Reset</strong> - Initialize environment with a kernel task (e.g., softmax_m4096_n256)</div>
+                </div>
+                <div class="feature-item">
+                    <span>2.</span>
+                    <div><strong>Configure</strong> - Select Triton config (block_size, num_warps, num_stages)</div>
+                </div>
+                <div class="feature-item">
+                    <span>3.</span>
+                    <div><strong>Step</strong> - Benchmark configuration and receive reward based on latency</div>
+                </div>
+                <div class="feature-item">
+                    <span>4.</span>
+                    <div><strong>Optimize</strong> - Use LLM to generate better kernel variants automatically</div>
+                </div>
+                <div class="feature-item">
+                    <span>5.</span>
+                    <div><strong>Learn</strong> - Surrogate model improves with more observations</div>
+                </div>
+                <div class="feature-item">
+                    <span>6.</span>
+                    <div><strong>Compare</strong> - Student vs Teacher LLM competition for best optimization</div>
+                </div>
+            </div>
+        </div>
+        <div class="code-block">
+            <pre><span class="comment"># Example: Using the RL Environment</span>
+<span class="comment"># 1. Reset with a task</span>
+POST /reset
+{
+  <span class="string">"task"</span>: <span class="string">"softmax_m4096_n256"</span>,
+  <span class="string">"seed"</span>: <span class="number">0</span>
+}
+<span class="comment"># 2. Take a step with a config</span>
+POST /step
+{
+  <span class="string">"config_id"</span>: <span class="number">0</span>,
+  <span class="string">"source"</span>: <span class="string">"def benchmark_generated_kernel..."</span>  <span class="comment"># optional kernel code</span>
+}
+<span class="comment"># Response includes reward based on latency improvement</span>
+{
+  <span class="string">"reward"</span>: <span class="number">0.093</span>,
+  <span class="string">"observation"</span>: {
+    <span class="string">"best_so_far_ms"</span>: <span class="number">0.41</span>,
+    <span class="string">"oracle_best_ms"</span>: <span class="number">0.38</span>
+  }
+}</pre>
+        </div>
+        <div class="cta">
+            <h2>Try It Now</h2>
+            <p>Use the interactive Gradio interface above to benchmark kernel configurations and explore the RL environment.</p>
+            <a href="/" class="btn">Launch Interface →</a>
+        </div>
+        <footer>
+            <p>RL Surrogate Kernel Autotuning Environment</p>
+            <p>Built with FastAPI, Gradio, Triton, and Transformers</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,10 @@
+torch>=2.4
+triton>=2.1
+numpy>=1.23
+fastapi>=0.111
+uvicorn>=0.30
+pydantic>=2.8
+requests>=2.32
+transformers>=4.48
+peft>=0.14
+accelerate>=1.2

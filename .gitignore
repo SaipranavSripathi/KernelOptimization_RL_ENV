@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+*.log
+outputs/
+data/softmax_measurements.csv
+cuda-full-2026-03-08.tar.gz
+cuda-repo.zip
+cuda_git_tracked_no_data.zip
+.DS_Store
+nohup.out
+venv/
+*.zip
+artifacts/

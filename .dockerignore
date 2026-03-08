@@ -1,0 +1,12 @@
+.git
+__pycache__/
+*.pyc
+*.pyo
+*.log
+nohup.out
+outputs/
+cuda-repo.zip
+cuda_git_tracked_no_data.zip
+artifacts/
+backend/
+frontend/

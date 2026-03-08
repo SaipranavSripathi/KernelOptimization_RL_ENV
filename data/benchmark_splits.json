@@ -1,0 +1,74 @@
+{
+  "families_present": [
+    "grouped_gemm",
+    "layernorm",
+    "softmax"
+  ],
+  "shape_generalization": {
+    "train_tasks": [
+      "grouped_gemm_g4_k512_m4096_n1024",
+      "grouped_gemm_g4_k512_m4096_n1536",
+      "grouped_gemm_g4_k512_m4096_n2048",
+      "grouped_gemm_g4_k512_m4096_n256",
+      "grouped_gemm_g4_k512_m4096_n3072",
+      "grouped_gemm_g4_k512_m4096_n4096",
+      "grouped_gemm_g4_k512_m4096_n512",
+      "layernorm_m4096_n1024",
+      "layernorm_m4096_n1536",
+      "layernorm_m4096_n2048",
+      "layernorm_m4096_n256",
+      "layernorm_m4096_n3072",
+      "layernorm_m4096_n4096",
+      "layernorm_m4096_n512",
+      "softmax_m4096_n1024",
+      "softmax_m4096_n1536",
+      "softmax_m4096_n2048",
+      "softmax_m4096_n256",
+      "softmax_m4096_n3072",
+      "softmax_m4096_n4096",
+      "softmax_m4096_n512"
+    ],
+    "test_tasks": [
+      "grouped_gemm_g4_k512_m4096_n6144",
+      "grouped_gemm_g4_k512_m4096_n8192",
+      "layernorm_m4096_n6144",
+      "layernorm_m4096_n8192",
+      "softmax_m4096_n6144",
+      "softmax_m4096_n8192"
+    ]
+  },
+  "family_holdout": {
+    "heldout_family": "grouped_gemm",
+    "train_tasks": [
+      "layernorm_m4096_n1024",
+      "layernorm_m4096_n1536",
+      "layernorm_m4096_n2048",
+      "layernorm_m4096_n256",
+      "layernorm_m4096_n3072",
+      "layernorm_m4096_n4096",
+      "layernorm_m4096_n512",
+      "layernorm_m4096_n6144",
+      "layernorm_m4096_n8192",
+      "softmax_m4096_n1024",
+      "softmax_m4096_n1536",
+      "softmax_m4096_n2048",
+      "softmax_m4096_n256",
+      "softmax_m4096_n3072",
+      "softmax_m4096_n4096",
+      "softmax_m4096_n512",
+      "softmax_m4096_n6144",
+      "softmax_m4096_n8192"
+    ],
+    "test_tasks": [
+      "grouped_gemm_g4_k512_m4096_n1024",
+      "grouped_gemm_g4_k512_m4096_n1536",
+      "grouped_gemm_g4_k512_m4096_n2048",
+      "grouped_gemm_g4_k512_m4096_n256",
+      "grouped_gemm_g4_k512_m4096_n3072",
+      "grouped_gemm_g4_k512_m4096_n4096",
+      "grouped_gemm_g4_k512_m4096_n512",
+      "grouped_gemm_g4_k512_m4096_n6144",
+      "grouped_gemm_g4_k512_m4096_n8192"
+    ]
+  }
+}
